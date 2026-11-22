@@ -284,11 +284,6 @@ section {
   object-fit: cover;
 }
 
-/* The portrait is black line art, so it needs a light backing on the dark page */
-.about__photo {
-  background: var(--ink);
-}
-
 .social-links {
   display: flex;
   justify-content: center;

@@ -16,7 +16,8 @@
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/styles.css">
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <!-- Icons are not needed for the first paint, so load them without blocking (media="print" trick) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" media="print" onload="this.media='all'">
 
 </head>
 <body>
@@ -66,7 +67,7 @@
         </div>
       </div>
       <div class="profile">
-        <img class="about__photo" src="assets/images/profile-1.svg" alt="Illustrated portrait of Naser Almasoud" width="280" height="280">
+        <img class="about__photo" src="assets/images/profile.webp" alt="Illustrated portrait of Naser Almasoud" width="280" height="280">
         <div class="social-links">
           <a href="https://x.com/Naser_Almasoud" target="_blank" rel="noopener" aria-label="X (Twitter)"><i class="fa-brands fa-x-twitter"></i></a>
           <a href="https://www.linkedin.com/in/naser-almasoud-5b030832a/" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
@@ -217,6 +218,6 @@
     </div>
   </footer>
 
-  <script src="js/script.js"></script>
+  <script src="js/script.js" defer></script>
 </body>
 </html>
