@@ -1,20 +1,41 @@
 /* =========================================================
    Portfolio interactivity
    0. Greeting by time of day             (dynamic content)
+   0b. Visitor name (state saved in localStorage)
    1. Mobile navigation menu
-   2. Projects: filter by category        (dynamic content)
+   2. Projects: filter by category + level, then sort
    3. Codeforces stats from the public API (data handling + feedback)
-   4. Contact form validation             (user feedback)
+   3b. GitHub repositories from the GitHub API
+   4. Contact form validation, counter, Send enabled only when valid
    5. Fade sections in while scrolling    (animation)
+   6. Time on site timer
+   7. Light/dark mode toggle (state saved in localStorage)
    ========================================================= */
 
 /* ---------- 0. Greeting by time of day ---------- */
 function setGreeting() {
   const hour = new Date().getHours(); // 0–23 on the visitor's clock
-  let greeting = "Good evening.";
-  if (hour < 12) greeting = "Good morning.";
-  else if (hour < 18) greeting = "Good afternoon.";
-  document.getElementById("greeting").textContent = greeting;
+  let greeting = "Good evening";
+  if (hour < 12) greeting = "Good morning";
+  else if (hour < 18) greeting = "Good afternoon";
+
+  // Add the visitor's saved name, if any, and fill it into the contact form
+  const name = localStorage.getItem("visitorName");
+  document.getElementById("greeting").textContent = name ? `${greeting}, ${name}.` : `${greeting}.`;
+  document.getElementById("nameBtn").textContent = name ? "Not you?" : "What's your name?";
+  document.getElementById("name").value = name || "";
+}
+
+/* ---------- 0b. Ask for the visitor's name and remember it ---------- */
+function setupVisitorName() {
+  document.getElementById("nameBtn").addEventListener("click", () => {
+    const name = prompt("What's your name? (leave empty to forget it)");
+    if (name === null) return; // visitor pressed Cancel
+
+    if (name.trim()) localStorage.setItem("visitorName", name.trim());
+    else localStorage.removeItem("visitorName");
+    setGreeting();
+  });
 }
 
 /* ---------- 1. Mobile navigation ---------- */
@@ -39,22 +60,22 @@ function setupMobileNav() {
   });
 }
 
-/* ---------- 2. Projects: filter by category ---------- */
+/* ---------- 2. Projects: filter by category + level, then sort ---------- */
 // Projects marked sample: true are made-up examples for testing the filters.
 const PROJECTS = [
-  { title: "Spam Email Detector", category: "ai", date: "2026-03", tech: "Python, LLM",
+  { title: "Spam Email Detector", level: "advanced", category: "ai", date: "2026-03", tech: "Python, LLM",
     description: "An AI model that detects spam emails. An LLM studies many emails, then classifies a new one as normal or spam." },
-  { title: "Deal Finder", category: "web", date: "2026-05", tech: "JavaScript, CSS, HTML, Python",
+  { title: "Deal Finder", level: "advanced", category: "web", date: "2026-05", tech: "JavaScript, CSS, HTML, Python",
     description: "A web platform that helps online shoppers find, evaluate and access reliable e-commerce stores." },
-  { title: "Student Performance Dashboard", category: "data", date: "2025-11", tech: "Python, Pandas, Matplotlib", sample: true,
+  { title: "Student Performance Dashboard", level: "beginner", category: "data", date: "2025-11", tech: "Python, Pandas, Matplotlib", sample: true,
     description: "Charts how study time, sleep and attendance relate to final grades in a public dataset." },
-  { title: "Housing Price Predictor", category: "data", date: "2026-01", tech: "Python, scikit-learn", sample: true,
+  { title: "Housing Price Predictor", level: "beginner", category: "data", date: "2026-01", tech: "Python, scikit-learn", sample: true,
     description: "A regression model that estimates a house price from its size, location and age." },
-  { title: "Arabic Sentiment Classifier", category: "ai", date: "2026-06", tech: "Python, PyTorch", sample: true,
+  { title: "Arabic Sentiment Classifier", level: "advanced", category: "ai", date: "2026-06", tech: "Python, PyTorch", sample: true,
     description: "Labels Arabic tweets as positive, negative or neutral using a fine-tuned transformer." },
-  { title: "Handwritten Digit Recognizer", category: "ai", date: "2025-09", tech: "Python, TensorFlow", sample: true,
+  { title: "Handwritten Digit Recognizer", level: "beginner", category: "ai", date: "2025-09", tech: "Python, TensorFlow", sample: true,
     description: "A neural network trained on MNIST that recognizes digits drawn on a canvas." },
-  { title: "Course Schedule Planner", category: "web", date: "2025-12", tech: "HTML, CSS, JavaScript", sample: true,
+  { title: "Course Schedule Planner", level: "beginner", category: "web", date: "2025-12", tech: "HTML, CSS, JavaScript", sample: true,
     description: "Builds a weekly timetable from chosen course sections and warns about time clashes." },
 ];
 
@@ -64,11 +85,29 @@ const CATEGORY_ICONS = { ai: "fa-brain", data: "fa-chart-line", web: "fa-code" }
 function setupProjects() {
   const grid = document.getElementById("projectGrid");
   const buttons = document.querySelectorAll(".filter-btn");
+  const levelSelect = document.getElementById("levelSelect");
+  const sortSelect = document.getElementById("sortSelect");
   let filter = "all";
 
+  // how each sort option orders two projects (dates are "YYYY-MM", so text comparison works)
+  const SORTS = {
+    newest: (a, b) => b.date.localeCompare(a.date),
+    oldest: (a, b) => a.date.localeCompare(b.date),
+    az: (a, b) => a.title.localeCompare(b.title),
+  };
+
   function render() {
-    // keep only the projects in the chosen category
-    const visible = PROJECTS.filter((p) => filter === "all" || p.category === filter);
+    const level = levelSelect.value;
+
+    // step 1: keep projects matching both the category and the level; step 2: sort them
+    const visible = PROJECTS
+      .filter((p) => (filter === "all" || p.category === filter) && (level === "all" || p.level === level))
+      .sort(SORTS[sortSelect.value]);
+
+    if (visible.length === 0) {
+      grid.innerHTML = "<p>No projects match these choices.</p>";
+      return;
+    }
 
     // build the cards (the data is written above, not typed by users, so innerHTML is safe here)
     grid.innerHTML = visible.map((p) => `
@@ -78,7 +117,7 @@ function setupProjects() {
           ${p.sample ? '<span class="project__sample">Sample</span>' : ""}
         </div>
         <div class="project__body">
-          <p class="project__meta">${CATEGORY_LABELS[p.category]} · ${p.date}</p>
+          <p class="project__meta">${CATEGORY_LABELS[p.category]} · ${p.level} · ${p.date}</p>
           <h3 class="project__title">${p.title}</h3>
           <p class="project__desc">${p.description}</p>
           <p class="project__tech">${p.tech}</p>
@@ -97,6 +136,8 @@ function setupProjects() {
     });
   });
 
+  levelSelect.addEventListener("change", render);
+  sortSelect.addEventListener("change", render);
   render();
 }
 
@@ -132,6 +173,34 @@ async function loadCodeforces() {
   }
 }
 
+/* ---------- 3b. GitHub repositories from the GitHub API ---------- */
+const GH_URL = "https://api.github.com/users/NaserAlmasoud/repos?sort=updated&per_page=6";
+
+async function loadGitHub() {
+  const list = document.getElementById("ghList");
+  const error = document.getElementById("ghError");
+  error.hidden = true;
+  list.innerHTML = "<li>Loading repositories…</li>";
+
+  try {
+    const response = await fetch(GH_URL);
+    if (!response.ok) throw new Error(response.status);
+    const repos = await response.json();
+
+    // these are my own repos, so their text is trusted (same approach as the project cards)
+    list.innerHTML = repos.map((repo) => `
+      <li class="gh__repo">
+        <a href="${repo.html_url}" target="_blank" rel="noopener">${repo.name}</a>
+        <p>${repo.description || "No description yet."}</p>
+        <small>${repo.language || "Code"} · ★ ${repo.stargazers_count}</small>
+      </li>`).join("");
+  } catch (err) {
+    // offline, GitHub down, or hourly limit (60 requests) reached
+    list.innerHTML = "";
+    error.hidden = false;
+  }
+}
+
 /* ---------- 4. Contact form validation ---------- */
 function setupContactForm() {
   const form = document.getElementById("contactForm");
@@ -159,8 +228,17 @@ function setupContactForm() {
     status.className = `form__status form__status--${type}`;
   }
 
+  const sendBtn = document.getElementById("sendBtn");
+  const count = document.getElementById("messageCount");
+
   // Re-check a field when the user leaves it
   fields.forEach((field) => field.addEventListener("blur", () => validateField(field)));
+
+  // While typing: update the character counter, and enable Send only when all rules pass
+  form.addEventListener("input", () => {
+    count.textContent = `${form.elements.message.value.length} / 500`;
+    sendBtn.disabled = !fields.every((field) => !rules[field.name](field.value.trim()));
+  });
 
   form.addEventListener("submit", (event) => {
     event.preventDefault(); // no backend: stay on the page
@@ -177,6 +255,8 @@ function setupContactForm() {
     const name = form.elements.name.value.trim();
     showStatus(`Thanks, ${name}! This demo form has no backend yet, so nothing was sent. Please email me at me@naser.md.`, "success");
     form.reset();
+    sendBtn.disabled = true;
+    count.textContent = "0 / 500";
   });
 }
 
@@ -199,13 +279,38 @@ function setupReveal() {
   document.querySelectorAll("main section").forEach((section) => observer.observe(section));
 }
 
+/* ---------- 6. Time on site (counts up every second) ---------- */
+function startVisitTimer() {
+  const timer = document.getElementById("visitTimer");
+  let seconds = 0;
+  setInterval(() => {
+    seconds++;
+    // show as m:ss, e.g. 2:05
+    timer.textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+  }, 1000);
+}
+
+/* ---------- 7. Light/dark mode, remembered in localStorage ---------- */
+function setupThemeToggle() {
+  document.getElementById("themeToggle").addEventListener("click", () => {
+    const root = document.documentElement;
+    root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+    localStorage.setItem("theme", root.dataset.theme);
+  });
+}
+
 /* Run everything once the HTML is ready */
 document.addEventListener("DOMContentLoaded", () => {
   setGreeting();
+  setupVisitorName();
   setupMobileNav();
   setupProjects();
   setupContactForm();
   setupReveal();
+  startVisitTimer();
+  setupThemeToggle();
   loadCodeforces();
   document.getElementById("cfRetry").addEventListener("click", loadCodeforces);
+  loadGitHub();
+  document.getElementById("ghRetry").addEventListener("click", loadGitHub);
 });

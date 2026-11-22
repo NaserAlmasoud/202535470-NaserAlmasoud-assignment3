@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme = "dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,12 @@
   <title>Naser Almasoud | Portfolio</title>
 
   <!-- Personal Site Theme (dark palette, self-hosted Manrope + Source Serif 4 fonts), then the portfolio's own layout -->
+  <!-- Apply the saved theme (or the device setting) before the page draws, so it doesn't flash -->
+  <script>
+    document.documentElement.dataset.theme = localStorage.getItem("theme")
+      || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  </script>
+
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/styles.css">
 
@@ -21,6 +27,10 @@
     <nav class="nav container" aria-label="Main navigation">
       <a class="nav__logo" href="#about" aria-label="Naser Almasoud, back to top">NA</a>
 
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch light/dark mode">
+        <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i>
+      </button>
+
       <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu">
         <span class="visually-hidden">Open menu</span>
         <span class="nav__bar"></span>
@@ -31,6 +41,7 @@
         <li><a class="nav__link" href="#about">About</a></li>
         <li><a class="nav__link" href="#skills">Skills</a></li>
         <li><a class="nav__link" href="#projects">Projects</a></li>
+        <li><a class="nav__link" href="#github">GitHub</a></li>
         <li><a class="nav__link" href="#codeforces">Codeforces</a></li>
         <li><a class="nav__link" href="#contact">Contact</a></li>
       </ul>
@@ -42,6 +53,7 @@
     <section id="about" class="about container">
       <div class="about__text">
         <p class="about__greeting"><span class="about__greeting-text" id="greeting">Hello.</span></p>
+        <button class="name-btn" id="nameBtn" type="button">What's your name?</button>
         <h1 class="about__name">I'm Naser Almasoud.</h1>
         <p class="about__tagline">A computer science student interested in problem solving, algorithms and AI.</p>
         <p class="about__intro">
@@ -79,7 +91,7 @@
     <!-- ========== Projects ========== -->
     <section id="projects" class="projects container">
       <h2 class="section-title">Projects</h2>
-      <p class="section-intro">Choose an area to show only those projects.</p>
+      <p class="section-intro">Filter by area and level, then sort the results.</p>
 
       <!-- Controls: the cards below are built by js/script.js from the PROJECTS array -->
       <div class="projects__controls">
@@ -89,11 +101,37 @@
           <button class="filter-btn" type="button" data-filter="data" aria-pressed="false">Data Science</button>
           <button class="filter-btn" type="button" data-filter="web" aria-pressed="false">Web Dev</button>
         </div>
+
+        <!-- Level and sort work together with the category filter -->
+        <div class="projects__selects">
+          <select id="levelSelect" aria-label="Filter by level">
+            <option value="all">All levels</option>
+            <option value="beginner">Beginner</option>
+            <option value="advanced">Advanced</option>
+          </select>
+          <select id="sortSelect" aria-label="Sort projects">
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="az">A–Z</option>
+          </select>
+        </div>
       </div>
 
       <div class="projects__grid" id="projectGrid">
         <!-- Fallback if JavaScript is turned off -->
         <noscript><p>Turn on JavaScript to see the project list.</p></noscript>
+      </div>
+    </section>
+
+    <!-- ========== GitHub repositories (live data from the GitHub API) ========== -->
+    <section id="github" class="container">
+      <h2 class="section-title">GitHub Repositories</h2>
+      <p class="section-intro">My latest public repositories, loaded live from the GitHub API.</p>
+
+      <ul class="gh__list" id="ghList"></ul>
+      <div class="cf__error" id="ghError" role="alert" hidden>
+        <p class="cf__error-text">Couldn't load repositories. You may be offline or GitHub is busy.</p>
+        <button class="btn btn--primary" type="button" id="ghRetry">Try again</button>
       </div>
     </section>
 
@@ -157,12 +195,13 @@
 
         <div class="form__field">
           <label for="message">Message</label>
-          <textarea id="message" name="message" rows="5" required></textarea>
+          <textarea id="message" name="message" rows="5" maxlength="500" required></textarea>
+          <p class="form__count" id="messageCount">0 / 500</p>
           <p class="form__error" id="messageError" aria-live="polite"></p>
         </div>
 
-
-        <button class="btn btn--primary" type="submit">Send message</button>
+        <!-- Enabled by js/script.js only when every field is valid -->
+        <button class="btn btn--primary" type="submit" id="sendBtn" disabled>Send message</button>
         <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
       </form>
     </section>
@@ -171,6 +210,7 @@
   <footer class="site-footer">
     <div class="container">
       <p>&copy; 2026 Naser Almasoud</p>
+      <p>Time on site: <span id="visitTimer">0:00</span></p>
       <a href="#about" class="site-footer__top">Back to top</a>
     </div>
   </footer>
