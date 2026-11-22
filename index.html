@@ -31,6 +31,7 @@
         <li><a class="nav__link" href="#about">About</a></li>
         <li><a class="nav__link" href="#skills">Skills</a></li>
         <li><a class="nav__link" href="#projects">Projects</a></li>
+        <li><a class="nav__link" href="#github">GitHub</a></li>
         <li><a class="nav__link" href="#codeforces">Codeforces</a></li>
         <li><a class="nav__link" href="#contact">Contact</a></li>
       </ul>
@@ -94,6 +95,18 @@
       <div class="projects__grid" id="projectGrid">
         <!-- Fallback if JavaScript is turned off -->
         <noscript><p>Turn on JavaScript to see the project list.</p></noscript>
+      </div>
+    </section>
+
+    <!-- ========== GitHub repositories (live data from the GitHub API) ========== -->
+    <section id="github" class="container">
+      <h2 class="section-title">GitHub Repositories</h2>
+      <p class="section-intro">My latest public repositories, loaded live from the GitHub API.</p>
+
+      <ul class="gh__list" id="ghList"></ul>
+      <div class="cf__error" id="ghError" role="alert" hidden>
+        <p class="cf__error-text">Couldn't load repositories. You may be offline or GitHub is busy.</p>
+        <button class="btn btn--primary" type="button" id="ghRetry">Try again</button>
       </div>
     </section>
 

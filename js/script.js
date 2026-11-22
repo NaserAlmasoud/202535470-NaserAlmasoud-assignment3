@@ -4,6 +4,7 @@
    1. Mobile navigation menu
    2. Projects: filter by category        (dynamic content)
    3. Codeforces stats from the public API (data handling + feedback)
+   3b. GitHub repositories from the GitHub API
    4. Contact form validation             (user feedback)
    5. Fade sections in while scrolling    (animation)
    ========================================================= */
@@ -132,6 +133,34 @@ async function loadCodeforces() {
   }
 }
 
+/* ---------- 3b. GitHub repositories from the GitHub API ---------- */
+const GH_URL = "https://api.github.com/users/NaserAlmasoud/repos?sort=updated&per_page=6";
+
+async function loadGitHub() {
+  const list = document.getElementById("ghList");
+  const error = document.getElementById("ghError");
+  error.hidden = true;
+  list.innerHTML = "<li>Loading repositories…</li>";
+
+  try {
+    const response = await fetch(GH_URL);
+    if (!response.ok) throw new Error(response.status);
+    const repos = await response.json();
+
+    // these are my own repos, so their text is trusted (same approach as the project cards)
+    list.innerHTML = repos.map((repo) => `
+      <li class="gh__repo">
+        <a href="${repo.html_url}" target="_blank" rel="noopener">${repo.name}</a>
+        <p>${repo.description || "No description yet."}</p>
+        <small>${repo.language || "Code"} · ★ ${repo.stargazers_count}</small>
+      </li>`).join("");
+  } catch (err) {
+    // offline, GitHub down, or hourly limit (60 requests) reached
+    list.innerHTML = "";
+    error.hidden = false;
+  }
+}
+
 /* ---------- 4. Contact form validation ---------- */
 function setupContactForm() {
   const form = document.getElementById("contactForm");
@@ -208,4 +237,6 @@ document.addEventListener("DOMContentLoaded", () => {
   setupReveal();
   loadCodeforces();
   document.getElementById("cfRetry").addEventListener("click", loadCodeforces);
+  loadGitHub();
+  document.getElementById("ghRetry").addEventListener("click", loadGitHub);
 });
