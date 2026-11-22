@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme = "dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,12 @@
   <title>Naser Almasoud | Portfolio</title>
 
   <!-- Personal Site Theme (dark palette, self-hosted Manrope + Source Serif 4 fonts), then the portfolio's own layout -->
+  <!-- Apply the saved theme (or the device setting) before the page draws, so it doesn't flash -->
+  <script>
+    document.documentElement.dataset.theme = localStorage.getItem("theme")
+      || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  </script>
+
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/styles.css">
 
@@ -20,6 +26,10 @@
   <header class="site-header">
     <nav class="nav container" aria-label="Main navigation">
       <a class="nav__logo" href="#about" aria-label="Naser Almasoud, back to top">NA</a>
+
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch light/dark mode">
+        <i class="fa-solid fa-circle-half-stroke" aria-hidden="true"></i>
+      </button>
 
       <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu">
         <span class="visually-hidden">Open menu</span>

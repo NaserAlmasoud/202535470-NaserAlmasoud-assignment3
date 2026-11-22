@@ -8,6 +8,7 @@
    4. Contact form validation, counter, Send enabled only when valid
    5. Fade sections in while scrolling    (animation)
    6. Time on site timer
+   7. Light/dark mode toggle (state saved in localStorage)
    ========================================================= */
 
 /* ---------- 0. Greeting by time of day ---------- */
@@ -271,6 +272,15 @@ function startVisitTimer() {
   }, 1000);
 }
 
+/* ---------- 7. Light/dark mode, remembered in localStorage ---------- */
+function setupThemeToggle() {
+  document.getElementById("themeToggle").addEventListener("click", () => {
+    const root = document.documentElement;
+    root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
+    localStorage.setItem("theme", root.dataset.theme);
+  });
+}
+
 /* Run everything once the HTML is ready */
 document.addEventListener("DOMContentLoaded", () => {
   setGreeting();
@@ -279,6 +289,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupContactForm();
   setupReveal();
   startVisitTimer();
+  setupThemeToggle();
   loadCodeforces();
   document.getElementById("cfRetry").addEventListener("click", loadCodeforces);
   loadGitHub();
