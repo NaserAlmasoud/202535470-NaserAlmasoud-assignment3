@@ -2,7 +2,7 @@
    Portfolio interactivity
    0. Greeting by time of day             (dynamic content)
    1. Mobile navigation menu
-   2. Projects: filter by category        (dynamic content)
+   2. Projects: filter by category + level, then sort
    3. Codeforces stats from the public API (data handling + feedback)
    3b. GitHub repositories from the GitHub API
    4. Contact form validation             (user feedback)
@@ -40,22 +40,22 @@ function setupMobileNav() {
   });
 }
 
-/* ---------- 2. Projects: filter by category ---------- */
+/* ---------- 2. Projects: filter by category + level, then sort ---------- */
 // Projects marked sample: true are made-up examples for testing the filters.
 const PROJECTS = [
-  { title: "Spam Email Detector", category: "ai", date: "2026-03", tech: "Python, LLM",
+  { title: "Spam Email Detector", level: "advanced", category: "ai", date: "2026-03", tech: "Python, LLM",
     description: "An AI model that detects spam emails. An LLM studies many emails, then classifies a new one as normal or spam." },
-  { title: "Deal Finder", category: "web", date: "2026-05", tech: "JavaScript, CSS, HTML, Python",
+  { title: "Deal Finder", level: "advanced", category: "web", date: "2026-05", tech: "JavaScript, CSS, HTML, Python",
     description: "A web platform that helps online shoppers find, evaluate and access reliable e-commerce stores." },
-  { title: "Student Performance Dashboard", category: "data", date: "2025-11", tech: "Python, Pandas, Matplotlib", sample: true,
+  { title: "Student Performance Dashboard", level: "beginner", category: "data", date: "2025-11", tech: "Python, Pandas, Matplotlib", sample: true,
     description: "Charts how study time, sleep and attendance relate to final grades in a public dataset." },
-  { title: "Housing Price Predictor", category: "data", date: "2026-01", tech: "Python, scikit-learn", sample: true,
+  { title: "Housing Price Predictor", level: "beginner", category: "data", date: "2026-01", tech: "Python, scikit-learn", sample: true,
     description: "A regression model that estimates a house price from its size, location and age." },
-  { title: "Arabic Sentiment Classifier", category: "ai", date: "2026-06", tech: "Python, PyTorch", sample: true,
+  { title: "Arabic Sentiment Classifier", level: "advanced", category: "ai", date: "2026-06", tech: "Python, PyTorch", sample: true,
     description: "Labels Arabic tweets as positive, negative or neutral using a fine-tuned transformer." },
-  { title: "Handwritten Digit Recognizer", category: "ai", date: "2025-09", tech: "Python, TensorFlow", sample: true,
+  { title: "Handwritten Digit Recognizer", level: "beginner", category: "ai", date: "2025-09", tech: "Python, TensorFlow", sample: true,
     description: "A neural network trained on MNIST that recognizes digits drawn on a canvas." },
-  { title: "Course Schedule Planner", category: "web", date: "2025-12", tech: "HTML, CSS, JavaScript", sample: true,
+  { title: "Course Schedule Planner", level: "beginner", category: "web", date: "2025-12", tech: "HTML, CSS, JavaScript", sample: true,
     description: "Builds a weekly timetable from chosen course sections and warns about time clashes." },
 ];
 
@@ -65,11 +65,29 @@ const CATEGORY_ICONS = { ai: "fa-brain", data: "fa-chart-line", web: "fa-code" }
 function setupProjects() {
   const grid = document.getElementById("projectGrid");
   const buttons = document.querySelectorAll(".filter-btn");
+  const levelSelect = document.getElementById("levelSelect");
+  const sortSelect = document.getElementById("sortSelect");
   let filter = "all";
 
+  // how each sort option orders two projects (dates are "YYYY-MM", so text comparison works)
+  const SORTS = {
+    newest: (a, b) => b.date.localeCompare(a.date),
+    oldest: (a, b) => a.date.localeCompare(b.date),
+    az: (a, b) => a.title.localeCompare(b.title),
+  };
+
   function render() {
-    // keep only the projects in the chosen category
-    const visible = PROJECTS.filter((p) => filter === "all" || p.category === filter);
+    const level = levelSelect.value;
+
+    // step 1: keep projects matching both the category and the level; step 2: sort them
+    const visible = PROJECTS
+      .filter((p) => (filter === "all" || p.category === filter) && (level === "all" || p.level === level))
+      .sort(SORTS[sortSelect.value]);
+
+    if (visible.length === 0) {
+      grid.innerHTML = "<p>No projects match these choices.</p>";
+      return;
+    }
 
     // build the cards (the data is written above, not typed by users, so innerHTML is safe here)
     grid.innerHTML = visible.map((p) => `
@@ -79,7 +97,7 @@ function setupProjects() {
           ${p.sample ? '<span class="project__sample">Sample</span>' : ""}
         </div>
         <div class="project__body">
-          <p class="project__meta">${CATEGORY_LABELS[p.category]} · ${p.date}</p>
+          <p class="project__meta">${CATEGORY_LABELS[p.category]} · ${p.level} · ${p.date}</p>
           <h3 class="project__title">${p.title}</h3>
           <p class="project__desc">${p.description}</p>
           <p class="project__tech">${p.tech}</p>
@@ -98,6 +116,8 @@ function setupProjects() {
     });
   });
 
+  levelSelect.addEventListener("change", render);
+  sortSelect.addEventListener("change", render);
   render();
 }
 
