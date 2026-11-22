@@ -71,6 +71,24 @@ section {
   margin-bottom: var(--space-6);
 }
 
+/* Show/hide button next to a section title */
+.section-toggle {
+  float: right;
+  margin-top: -3.5rem; /* sit on the same line as the title above it */
+  padding: var(--space-1) var(--space-3);
+  background: none;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-full);
+  color: var(--ink-muted);
+  font-family: var(--font-display);
+  cursor: pointer;
+}
+
+/* A collapsed section keeps only its title and button */
+.is-collapsed > :not(.section-title, .section-toggle) {
+  display: none;
+}
+
 /* Buttons reuse the theme's .btn base; these are the two variants */
 .btn--primary {
   background: var(--accent);
@@ -264,11 +282,6 @@ section {
   border: 1px solid var(--border-hairline);
   aspect-ratio: 1;
   object-fit: cover;
-}
-
-/* The portrait is black line art, so it needs a light backing on the dark page */
-.about__photo {
-  background: var(--ink);
 }
 
 .social-links {
