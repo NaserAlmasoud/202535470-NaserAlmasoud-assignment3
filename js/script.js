@@ -7,6 +7,7 @@
    3b. GitHub repositories from the GitHub API
    4. Contact form validation, counter, Send enabled only when valid
    5. Fade sections in while scrolling    (animation)
+   6. Time on site timer
    ========================================================= */
 
 /* ---------- 0. Greeting by time of day ---------- */
@@ -259,6 +260,17 @@ function setupReveal() {
   document.querySelectorAll("main section").forEach((section) => observer.observe(section));
 }
 
+/* ---------- 6. Time on site (counts up every second) ---------- */
+function startVisitTimer() {
+  const timer = document.getElementById("visitTimer");
+  let seconds = 0;
+  setInterval(() => {
+    seconds++;
+    // show as m:ss, e.g. 2:05
+    timer.textContent = `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
+  }, 1000);
+}
+
 /* Run everything once the HTML is ready */
 document.addEventListener("DOMContentLoaded", () => {
   setGreeting();
@@ -266,6 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupProjects();
   setupContactForm();
   setupReveal();
+  startVisitTimer();
   loadCodeforces();
   document.getElementById("cfRetry").addEventListener("click", loadCodeforces);
   loadGitHub();
