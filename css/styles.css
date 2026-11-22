@@ -319,6 +319,15 @@ section {
   color: var(--on-accent);
 }
 
+.projects__selects {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.projects__selects select {
+  width: auto; /* the theme makes form fields full width */
+}
+
 .projects__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

@@ -80,7 +80,7 @@
     <!-- ========== Projects ========== -->
     <section id="projects" class="projects container">
       <h2 class="section-title">Projects</h2>
-      <p class="section-intro">Choose an area to show only those projects.</p>
+      <p class="section-intro">Filter by area and level, then sort the results.</p>
 
       <!-- Controls: the cards below are built by js/script.js from the PROJECTS array -->
       <div class="projects__controls">
@@ -89,6 +89,20 @@
           <button class="filter-btn" type="button" data-filter="ai" aria-pressed="false">AI</button>
           <button class="filter-btn" type="button" data-filter="data" aria-pressed="false">Data Science</button>
           <button class="filter-btn" type="button" data-filter="web" aria-pressed="false">Web Dev</button>
+        </div>
+
+        <!-- Level and sort work together with the category filter -->
+        <div class="projects__selects">
+          <select id="levelSelect" aria-label="Filter by level">
+            <option value="all">All levels</option>
+            <option value="beginner">Beginner</option>
+            <option value="advanced">Advanced</option>
+          </select>
+          <select id="sortSelect" aria-label="Sort projects">
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="az">A–Z</option>
+          </select>
         </div>
       </div>
 
