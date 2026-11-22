@@ -10,6 +10,7 @@
    5. Fade sections in while scrolling    (animation)
    6. Time on site timer
    7. Light/dark mode toggle (state saved in localStorage)
+   8. Show/hide sections (state saved in localStorage)
    ========================================================= */
 
 /* ---------- 0. Greeting by time of day ---------- */
@@ -299,6 +300,24 @@ function setupThemeToggle() {
   });
 }
 
+/* ---------- 8. Show/hide sections, remembered in localStorage ---------- */
+function setupSectionToggles() {
+  document.querySelectorAll(".section-toggle").forEach((btn) => {
+    const section = btn.closest("section");
+    const key = `hide-${section.id}`;
+
+    function apply(hidden) {
+      section.classList.toggle("is-collapsed", hidden);
+      btn.textContent = hidden ? "Show" : "Hide";
+      btn.setAttribute("aria-expanded", String(!hidden));
+      localStorage.setItem(key, hidden);
+    }
+
+    apply(localStorage.getItem(key) === "true"); // restore the last choice
+    btn.addEventListener("click", () => apply(!section.classList.contains("is-collapsed")));
+  });
+}
+
 /* Run everything once the HTML is ready */
 document.addEventListener("DOMContentLoaded", () => {
   setGreeting();
@@ -309,6 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
   setupReveal();
   startVisitTimer();
   setupThemeToggle();
+  setupSectionToggles();
   loadCodeforces();
   document.getElementById("cfRetry").addEventListener("click", loadCodeforces);
   loadGitHub();
