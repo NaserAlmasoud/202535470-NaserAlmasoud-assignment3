@@ -5,7 +5,7 @@
    2. Projects: filter by category + level, then sort
    3. Codeforces stats from the public API (data handling + feedback)
    3b. GitHub repositories from the GitHub API
-   4. Contact form validation             (user feedback)
+   4. Contact form validation, counter, Send enabled only when valid
    5. Fade sections in while scrolling    (animation)
    ========================================================= */
 
@@ -208,8 +208,17 @@ function setupContactForm() {
     status.className = `form__status form__status--${type}`;
   }
 
+  const sendBtn = document.getElementById("sendBtn");
+  const count = document.getElementById("messageCount");
+
   // Re-check a field when the user leaves it
   fields.forEach((field) => field.addEventListener("blur", () => validateField(field)));
+
+  // While typing: update the character counter, and enable Send only when all rules pass
+  form.addEventListener("input", () => {
+    count.textContent = `${form.elements.message.value.length} / 500`;
+    sendBtn.disabled = !fields.every((field) => !rules[field.name](field.value.trim()));
+  });
 
   form.addEventListener("submit", (event) => {
     event.preventDefault(); // no backend: stay on the page
@@ -226,6 +235,8 @@ function setupContactForm() {
     const name = form.elements.name.value.trim();
     showStatus(`Thanks, ${name}! This demo form has no backend yet, so nothing was sent. Please email me at me@naser.md.`, "success");
     form.reset();
+    sendBtn.disabled = true;
+    count.textContent = "0 / 500";
   });
 }
 

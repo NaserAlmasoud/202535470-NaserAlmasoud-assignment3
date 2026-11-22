@@ -184,12 +184,13 @@
 
         <div class="form__field">
           <label for="message">Message</label>
-          <textarea id="message" name="message" rows="5" required></textarea>
+          <textarea id="message" name="message" rows="5" maxlength="500" required></textarea>
+          <p class="form__count" id="messageCount">0 / 500</p>
           <p class="form__error" id="messageError" aria-live="polite"></p>
         </div>
 
-
-        <button class="btn btn--primary" type="submit">Send message</button>
+        <!-- Enabled by js/script.js only when every field is valid -->
+        <button class="btn btn--primary" type="submit" id="sendBtn" disabled>Send message</button>
         <p class="form__status" id="formStatus" role="status" aria-live="polite"></p>
       </form>
     </section>

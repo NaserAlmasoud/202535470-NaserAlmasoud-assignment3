@@ -611,6 +611,18 @@ section {
   color: var(--danger);
 }
 
+.form__count {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-faint);
+  text-align: right;
+}
+
+.form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .form__status {
   margin: 0;
 }
