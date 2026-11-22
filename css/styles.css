@@ -134,6 +134,18 @@ section {
   color-scheme: light;
 }
 
+/* "What's your name?" looks like a small link under the greeting */
+.name-btn {
+  margin-bottom: var(--space-4);
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-family: var(--font-display);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /* Light/dark button: margin-left auto pushes it (and the menu) to the right */
 .theme-toggle {
   margin-left: auto;

@@ -1,6 +1,7 @@
 /* =========================================================
    Portfolio interactivity
    0. Greeting by time of day             (dynamic content)
+   0b. Visitor name (state saved in localStorage)
    1. Mobile navigation menu
    2. Projects: filter by category + level, then sort
    3. Codeforces stats from the public API (data handling + feedback)
@@ -14,10 +15,27 @@
 /* ---------- 0. Greeting by time of day ---------- */
 function setGreeting() {
   const hour = new Date().getHours(); // 0–23 on the visitor's clock
-  let greeting = "Good evening.";
-  if (hour < 12) greeting = "Good morning.";
-  else if (hour < 18) greeting = "Good afternoon.";
-  document.getElementById("greeting").textContent = greeting;
+  let greeting = "Good evening";
+  if (hour < 12) greeting = "Good morning";
+  else if (hour < 18) greeting = "Good afternoon";
+
+  // Add the visitor's saved name, if any, and fill it into the contact form
+  const name = localStorage.getItem("visitorName");
+  document.getElementById("greeting").textContent = name ? `${greeting}, ${name}.` : `${greeting}.`;
+  document.getElementById("nameBtn").textContent = name ? "Not you?" : "What's your name?";
+  document.getElementById("name").value = name || "";
+}
+
+/* ---------- 0b. Ask for the visitor's name and remember it ---------- */
+function setupVisitorName() {
+  document.getElementById("nameBtn").addEventListener("click", () => {
+    const name = prompt("What's your name? (leave empty to forget it)");
+    if (name === null) return; // visitor pressed Cancel
+
+    if (name.trim()) localStorage.setItem("visitorName", name.trim());
+    else localStorage.removeItem("visitorName");
+    setGreeting();
+  });
 }
 
 /* ---------- 1. Mobile navigation ---------- */
@@ -284,6 +302,7 @@ function setupThemeToggle() {
 /* Run everything once the HTML is ready */
 document.addEventListener("DOMContentLoaded", () => {
   setGreeting();
+  setupVisitorName();
   setupMobileNav();
   setupProjects();
   setupContactForm();
