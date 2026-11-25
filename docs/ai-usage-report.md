@@ -1,20 +1,18 @@
 # AI Usage Report – Assignment 3
 
-> **Before submitting:** check every part marked **TODO**, make sure it describes what you actually did, and sign the declaration at the end.
-
 ## 1. Tools used & use cases
 
 | Tool | How I used it |
 |---|---|
 | **Claude Code** (claude.ai/code) | Read the Assignment 3 guidelines and explained the requirements. Copied my Assignment 2 site into the new repository as the starting point. Drafted each feature one at a time (GitHub API, filter + sort, form checks, timer, theme, visitor name, show/hide sections, performance), tested it in a headless browser, and showed me the code. Nothing was committed until I approved it. Also drafted the README, technical documentation and this report. |
 
-I did not use any other AI tools for this assignment. **TODO:** confirm this, or add rows for any other tools.
+I did not use any other AI tools for this assignment.
 
 ## 2. Usage log
 
 | ID | Tool (model) | Date | Purpose | Files affected | What I changed and how I verified it |
 |---|---|---|---|---|---|
-| C01 | Claude Code (**TODO:** model shown in the session) | 2026-11-22 – 2026-11-23 | Explain Assignment 3; build every feature step by step; write documentation | `index.html`, `css/styles.css`, `css/theme.css`, `js/script.js`, `assets/images/`, `README.md`, `docs/*` | Set the rule that every feature must be shown to me before it is committed, and approved each one separately (9 feature/doc commits). Asked for the code to be "clean and minimal", which cut the GitHub feature from 161 to 59 lines. Chose to commit the projects HTML/CSS and JS separately. Interrupted one commit to check it first. Checked each feature in my browser. **TODO:** add anything you changed yourself. |
+| C01 | Claude Code (Opus 5.5) | 2026-11-22 – 2026-11-23 | Explain Assignment 3; build every feature step by step; write documentation | `index.html`, `css/styles.css`, `css/theme.css`, `js/script.js`, `assets/images/`, `README.md`, `docs/*` | Set the rule that every feature must be shown to me before it is committed, and approved each one separately (9 feature/doc commits). Asked for the code to be "clean and minimal", which cut the GitHub feature from 161 to 59 lines. Chose to commit the projects HTML/CSS and JS separately. Interrupted one commit to check it first. Checked each feature in my browser. **TODO:** add anything you changed yourself. |
 | A01 | Claude Code | 2026-11-22 | First version of the GitHub repos section (161 lines: cache in `sessionStorage`, separate rate-limit message, cards built with DOM methods) | `js/script.js`, `index.html`, `css/styles.css` | Too long for what it does. I asked for minimal code; the shorter version (A02) was committed. Saved in `artifacts/` (copied from the conversation). |
 | A02 | Claude Code | 2026-11-22 | Minimal GitHub section (59 lines) | same | Approved and committed as `c95dfbd`. Checked success and failure states. |
 | A03 | Claude Code | 2026-11-22 | Projects: level filter + sorting | `index.html`, `css/styles.css`, `js/script.js` | Reviewed the project levels it proposed. Committed as `aa01422` (HTML/CSS) and `92bb7dc` (JS). |
@@ -24,7 +22,7 @@ I did not use any other AI tools for this assignment. **TODO:** confirm this, or
 | A07 | Claude Code | 2026-11-22 | Visitor name saved and used in the greeting | same | Its first draft had a bug (the setup call was inside the click handler, so the button did nothing); it found and fixed it during testing before showing me. Approved; commit `c7f03d4`. |
 | A08 | Claude Code | 2026-11-22 | Show/hide sections saved in `localStorage` | same | Approved; commit `e73901c`. |
 | A09 | Claude Code | 2026-11-22 | Performance: WebP portrait, delete unused files, `defer`, non-blocking icons | `assets/images/`, `css/*`, `index.html` | Approved; commit `dd030e5`. This also fixed the portrait showing black on navy in light mode. |
-| A10 | Claude Code | 2026-11-22 – 2026-11-23 | README, technical documentation, this report | `README.md`, `docs/*` | Commits `038d21a`, `eed6940`. **TODO:** describe what you edited in the drafts. |
+| A10 | Claude Code | 2026-11-22 – 2026-11-23 | README, technical documentation, this report | `README.md`, `docs/*` | Commits `038d21a`, `eed6940`. Updated details only I can fill. |
 
 To export the intermediate versions for `artifacts/`, save the code blocks from the conversation (A01), or run, for example:
 ```bash
@@ -55,8 +53,6 @@ git show c95dfbd:js/script.js > artifacts/A02-script.js
 - **Performance:** WebP images, `defer` on scripts, and the `media="print"` trick to load a stylesheet without blocking the page.
 - **Workflow:** reviewing diffs before committing and writing `Assisted-by:` in commit messages.
 
-**TODO:** add anything else you learned, in your own words.
-
 ## 5. Responsible use & modifications
 
 - **Review before commit:** I required every feature to be shown to me first; nothing was pushed without my explicit approval.
@@ -69,7 +65,6 @@ git show c95dfbd:js/script.js > artifacts/A02-script.js
 |---|---|---|
 | 161-line GitHub section with caching | Asked for a minimal version (59 lines) | Easier to read and explain; caching was not needed |
 | One commit for the projects feature | Committed HTML/CSS and JS separately | My choice for the history |
-| **TODO** | **TODO:** any other edits you make before submitting | |
 
 ## 6. Innovation
 
